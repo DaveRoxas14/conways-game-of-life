@@ -7,7 +7,22 @@ namespace Game.Scripts.Runtime.Rules
     {
         public bool ComputeNext(ICell cell, ICell[] neighbors)
         {
-            return false;
+            var alive = 0;
+            
+            foreach (var neighbor in neighbors)
+            {
+                if (neighbor.IsAlive)
+                    alive++;
+            }
+
+            if (cell.IsAlive)
+            {
+                return alive is 2 or 3;
+            }
+            else
+            {
+                return alive is 3;
+            }
         }
     }
 }
