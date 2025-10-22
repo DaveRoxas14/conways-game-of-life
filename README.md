@@ -1,5 +1,5 @@
 # conways-game-of-life
-This is my own version of Conway's Game of Life made in Unity C#
+This is my own version of Conway's Game of Life made in Unity C# using SOLID principles.
 
 ## What is Conway's Game of Life?
  The universe of the Game of Life is an infinite, two-dimensional orthogonal grid of square
