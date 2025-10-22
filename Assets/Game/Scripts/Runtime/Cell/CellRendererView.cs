@@ -31,8 +31,8 @@ namespace Game.Scripts.Runtime.Cell
 
         private void OnCellStateChanged(ICell obj)
         {
-            // spriteRenderer.color = obj.IsAlive ? aliveColor : deadColor;
-            gameObject.SetActive(obj.IsAlive);
+            spriteRenderer.color = obj.IsAlive ? aliveColor : deadColor;
+            
         }
 
         public void SetPosition(float x, float y)

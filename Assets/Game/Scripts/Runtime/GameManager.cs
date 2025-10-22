@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using Game.Scripts.Runtime.Cell;
 using Game.Scripts.Runtime.Factory;
 using Game.Scripts.Runtime.Rules;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.Scripts.Runtime
 {
     public class GameManager : MonoBehaviour
     {
-        #region MyRegion
+        #region Members
 
         [Header(StrattonConstants.INSPECTOR.GRID)] 
         [SerializeField] private int _gridWidth = 30;
@@ -18,6 +20,9 @@ namespace Game.Scripts.Runtime
         [SerializeField] private float _interval = 0.1f;
         [SerializeField] private Color _aliveColor = Color.green;
         [SerializeField] private Color _deadColor = Color.red;
+
+        [SerializeField] private Button _button;
+        [SerializeField] private TextMeshProUGUI _buttonText;
 
         [Header(StrattonConstants.INSPECTOR.REFERENCES)] 
         [SerializeField] private GameObject _cellPrefab;
@@ -27,6 +32,7 @@ namespace Game.Scripts.Runtime
         private GridController gridController;
         private IGridFactory factory = new GridFactory();
         private List<ICellRenderer> renderers = new ();
+        private bool isPlaying;
 
         public GridController GridController => gridController;
 
@@ -40,8 +46,10 @@ namespace Game.Scripts.Runtime
 
         private void Start()
         {
+            _button.onClick.AddListener(PlaySimulation);
             gridController = new GridController(GridWidth, GridHeight, factory);
             CreateViews();
+            StartCoroutine(Simulate());
         }
 
         #endregion
@@ -64,11 +72,25 @@ namespace Game.Scripts.Runtime
             }
         }
 
+        private void PlaySimulation()
+        {
+            isPlaying = !isPlaying;
+
+            _buttonText.text = isPlaying ? StrattonConstants.BUTTON.STOP : StrattonConstants.BUTTON.PLAY;
+        }
+
         private IEnumerator Simulate()
         {
             while (true)
             {
+                if (!isPlaying)
+                {
+                    yield return null;
+                    continue;
+                }
+                
                 yield return new WaitForSeconds(_interval);
+                
                 Next();
             }
         }
