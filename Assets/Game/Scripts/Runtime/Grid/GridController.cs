@@ -1,4 +1,6 @@
-﻿namespace Game.Scripts.Runtime.Factory
+﻿using System.Collections.Generic;
+
+namespace Game.Scripts.Runtime.Factory
 {
     public class GridController
     {
@@ -13,7 +15,29 @@
             _height = height;
             Grid = factory.Create(width, height);
         }
-        
-        
+
+        public ICell[] GetNeighbors(int x, int y)
+        {
+            var cellList = new List<ICell>(8);
+            for (var dx = -1; dx <= 1; dx++)
+            {
+                for (var dy = -1; dy <= 1; dy++)
+                {
+                    if(dx == 0 && dy == 0) continue;
+
+                    var nx = x + dx;
+                    var ny = y + dy;
+                    
+                    if(nx >= 0 && nx < _width && ny >= 0 && ny < _height)
+                        cellList.Add(Grid[nx,ny]);
+                }
+            }
+            return cellList.ToArray();
+        }
+
+        public void SetCellState(int x, int y, bool alive)
+        {
+            Grid[x,y].SetAlive(alive);
+        }
     }
 }
