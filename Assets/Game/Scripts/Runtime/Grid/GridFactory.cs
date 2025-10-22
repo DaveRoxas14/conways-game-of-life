@@ -4,7 +4,7 @@
     {
         public ICell[,] Create(int width, int height)
         {
-            var grid = new ICell[height, width];
+            var grid = new ICell[width, height];
             for (var x = 0; x < width; x++)
             {
                 for (var y = 0; y < height; y++)
