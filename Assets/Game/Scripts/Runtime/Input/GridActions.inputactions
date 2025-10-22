@@ -1,6 +1,35 @@
 {
-    "version": 0,
+    "version": 1,
     "name": "GridActions",
-    "maps": [],
+    "maps": [
+        {
+            "name": "UI",
+            "id": "59f56a53-71b0-45ac-895d-1d4767094aa9",
+            "actions": [
+                {
+                    "name": "Click",
+                    "type": "Button",
+                    "id": "86da797c-de67-4be1-9cfd-13c823c5f56e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "5f34623f-768f-440a-8328-81ae43ab2972",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
     "controlSchemes": []
 }

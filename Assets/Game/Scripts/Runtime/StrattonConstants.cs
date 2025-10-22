@@ -14,6 +14,7 @@
         public static class MENU_NAME
         {
             public const string RULE_MENU = "Game of Life/Rule";
+            public const string INPUT_MENU = "Input/Input Reader";
         }
         
     }
