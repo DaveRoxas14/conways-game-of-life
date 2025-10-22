@@ -96,12 +96,12 @@ namespace Game.Scripts.Runtime.Input
             ""actions"": [
                 {
                     ""name"": ""Click"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""86da797c-de67-4be1-9cfd-13c823c5f56e"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Vector3"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
