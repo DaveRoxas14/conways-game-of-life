@@ -5,6 +5,8 @@ namespace Game.Scripts.Runtime
 {
     public class GameManager : MonoBehaviour
     {
+        #region MyRegion
+
         [Header(StrattonConstants.INSPECTOR.GRID)] 
         [SerializeField] private int _gridWidth = 30;
         [SerializeField] private int _gridHeight = 10;
@@ -16,10 +18,16 @@ namespace Game.Scripts.Runtime
         [SerializeField] private GameObject _cellPrefab;
         [SerializeField] private Transform _cellParent;
 
+        #endregion
+
+        #region Unity Functions
+
         private void Start()
         {
             
         }
+
+        #endregion
 
         private void Next()
         {
