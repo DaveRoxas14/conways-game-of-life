@@ -16,6 +16,12 @@
             public const string RULE_MENU = "Game of Life/Rule";
             public const string INPUT_MENU = "Input/Input Reader";
         }
+
+        public static class BUTTON
+        {
+            public const string PLAY = "Play";
+            public const string STOP = "Stop";
+        }
         
     }
 }
