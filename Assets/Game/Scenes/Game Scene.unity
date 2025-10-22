@@ -170,6 +170,7 @@ MonoBehaviour:
   _deadColor: {r: 0.5943396, g: 0, b: 0, a: 1}
   _cellPrefab: {fileID: 2520361336665964712, guid: 96496b17f7427a64aa4858a895487bee, type: 3}
   _cellParent: {fileID: 732193012}
+  _rule: {fileID: 11400000, guid: e17470a316db64040b8c9248da3429ef, type: 2}
 --- !u!1 &441049652
 GameObject:
   m_ObjectHideFlags: 0
@@ -415,8 +416,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc8ff13e68b84791b32b23427c295d0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _camera: {fileID: 519420031}
+  _camera: {fileID: 519420028}
   _reader: {fileID: 11400000, guid: 2de948abd1d053546828ad3e9e1a262f, type: 2}
+  gameController: {fileID: 93586374}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
