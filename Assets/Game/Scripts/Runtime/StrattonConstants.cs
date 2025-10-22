@@ -13,7 +13,7 @@
         
         public static class MENU_NAME
         {
-            
+            public const string RULE_MENU = "Game of Life/Rule";
         }
         
     }
