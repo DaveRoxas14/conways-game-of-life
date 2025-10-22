@@ -7,7 +7,7 @@ namespace Game.Scripts.Runtime.Input
     [CreateAssetMenu(menuName = StrattonConstants.MENU_NAME.INPUT_MENU)]
     public class InputReader : ScriptableObject, GridActions.IUIActions
     {
-        public event Action<Vector3> OnClick;
+        public event Action OnClick;
 
         private GridActions _gridInput;
 
@@ -31,7 +31,7 @@ namespace Game.Scripts.Runtime.Input
         {
             if(context.performed)
             {
-                OnClick?.Invoke(context.ReadValue<Vector3>());
+                OnClick?.Invoke();
             }
         }
     }

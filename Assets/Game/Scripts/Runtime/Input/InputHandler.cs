@@ -20,11 +20,10 @@ namespace Game.Scripts.Runtime.Input
             _reader.OnClick -= OnLeftMouseClick;
         }
 
-        private void OnLeftMouseClick(Vector3 ctx)
+        private void OnLeftMouseClick()
         {
-            Debug.Log("[Input] Testing input");
             var cam = _camera.GetComponent<Camera>();
-            var world = cam.ScreenToWorldPoint(ctx);
+            var world = cam.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
             var x = Mathf.FloorToInt(world.x + gameController.GridWidth / 2f);
             var y = Mathf.FloorToInt(world.y + gameController.GridHeight / 2f);
             gameController.ToggleCell(x, y);
