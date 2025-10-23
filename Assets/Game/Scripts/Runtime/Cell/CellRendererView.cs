@@ -12,7 +12,9 @@ namespace Game.Scripts.Runtime.Cell
         private ICell localCell;
         private Color aliveColor;
         private Color deadColor;
-        
+
+        public Transform CellTransform => transform;
+
         public void Initialize(ICell cell, Color alive, Color dead)
         {
             localCell = cell;

@@ -23,24 +23,30 @@ namespace Game.Scripts.Runtime
         [SerializeField] private Color _aliveColor = Color.green;
         [SerializeField] private Color _deadColor = Color.red;
 
-        
-
         [Header(StrattonConstants.INSPECTOR.REFERENCES)] 
         [SerializeField] private GameObject _cellPrefab;
         [SerializeField] private Transform _cellParent;
         [SerializeField] private RuleSO _rule;
+        
         [SerializeField] private Button _playButton;
-        [SerializeField] private TextMeshProUGUI _playbuttonText;
         [SerializeField] private Button _nextButton;
-        [SerializeField] private Slider _intervalSlider;
+        [SerializeField] private Button _resetButton;
+        
+        [SerializeField] private TextMeshProUGUI _playbuttonText;
         [SerializeField] private TextMeshProUGUI _generationText;
         [SerializeField] private TextMeshProUGUI _livingCellsText;
+        [SerializeField] private TextMeshProUGUI _resetButtonText;
+
+        [SerializeField] private Slider _intervalSlider;
+        [SerializeField] private Slider _cellSizeSlider;
 
         private GridController gridController;
         private IGridFactory factory = new GridFactory();
         private List<ICellRenderer> renderers = new ();
         private bool isPlaying;
         private int currentGen;
+        private bool _startedGen;
+        private bool _isReset;
 
         public GridController GridController => gridController;
 
@@ -54,10 +60,17 @@ namespace Game.Scripts.Runtime
 
         private void Start()
         {
+            _intervalSlider.value = _interval;
+            _cellSizeSlider.value = 1f;
+            
             _playButton.onClick.AddListener(PlaySimulation);
             _nextButton.onClick.AddListener(Next);
+            _resetButton.onClick.AddListener(ResetToInitial);
+            
             _intervalSlider.onValueChanged.AddListener(OnIntervalTextChanged);
-            _intervalSlider.value = _interval;
+            _cellSizeSlider.onValueChanged.AddListener(OnCellSizeSliderChanged);
+            
+            
             gridController = new GridController(GridWidth, GridHeight, factory);
             CreateViews();
             UpdateGeneration(0, true);
@@ -139,6 +152,8 @@ namespace Game.Scripts.Runtime
 
         private void Next()
         {
+            TryCache();
+            
             var nextStates = new bool[GridWidth, GridHeight];
             for (var x = 0; x < GridWidth; x++)
             {
@@ -164,13 +179,36 @@ namespace Game.Scripts.Runtime
 
         private void ResetToInitial()
         {
-            UpdateGeneration();
-            UpdateAliveText();
-        }
-
-        private void Clear()
-        {
+            if (_isReset)
+            {
+                _startedGen = false;
+                gridController.KillAllCells();
+                UpdateGeneration(0, true);
+                UpdateAliveText();
+                isPlaying = true;
+                PlaySimulation();
+                
+                return;
+            }
             
+            _isReset = true;
+            _startedGen = false;
+            gridController.RevertCellsToStarting();
+            UpdateGeneration(0, true);
+            UpdateAliveText();
+            isPlaying = true;
+            PlaySimulation();
+            _resetButtonText.text = "Clear";
+            
+        }
+        
+
+        private void OnCellSizeSliderChanged(float value)
+        {
+            foreach (var cellRenderer in renderers)
+            {
+                cellRenderer.CellTransform.localScale = Vector3.one * value;
+            }
         }
         
         public void ToggleCell(int x, int y)
@@ -204,6 +242,17 @@ namespace Game.Scripts.Runtime
         private void UpdateAliveText(bool reset = false)
         {
             _livingCellsText.text = reset ? "Living Cells: 0" : $"Living Cells: {GetAliveCells().Count}";
+        }
+
+        private void TryCache()
+        {
+            if (_startedGen == false)
+            {
+                _startedGen = true;
+                _isReset = false;
+                _resetButtonText.text = "Reset";
+                gridController.CacheStartingCells();
+            }
         }
 
         #endregion

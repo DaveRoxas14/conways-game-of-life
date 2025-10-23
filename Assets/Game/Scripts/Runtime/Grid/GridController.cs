@@ -9,6 +9,8 @@ namespace Game.Scripts.Runtime.Factory
         private int _width = 0;
         private int _height = 0;
 
+        private List<ICell> _startingCells = new List<ICell>();
+
         public GridController(int width, int height, IGridFactory factory)
         {
             _width = width;
@@ -55,6 +57,46 @@ namespace Game.Scripts.Runtime.Factory
             }
 
             return aliveList;
+        }
+
+        public void CacheStartingCells()
+        {
+            _startingCells.Clear();
+            
+            for (var x = 0; x < _width; x++)
+            {
+                for (var y = 0; y < _height; y++)
+                {
+                    if (Grid[x, y].IsAlive)
+                    {
+                        _startingCells.Add(Grid[x,y]);
+                    }
+                }
+            }
+        }
+
+        public void RevertCellsToStarting()
+        {
+            KillAllCells();
+            
+            foreach (var cell in _startingCells)
+            {
+                Grid[cell.X, cell.Y].SetAlive(true);
+            }
+        }
+
+        public void KillAllCells()
+        {
+            for (var x = 0; x < _width; x++)
+            {
+                for (var y = 0; y < _height; y++)
+                {
+                    if (Grid[x, y].IsAlive)
+                    {
+                        Grid[x, y].SetAlive(false);
+                    }
+                }
+            }
         }
     }
 }

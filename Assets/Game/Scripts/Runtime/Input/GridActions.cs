@@ -111,6 +111,24 @@ namespace Game.Scripts.Runtime.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""PointerPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""c5925495-8dcc-421b-a97c-c226f3c84cdd"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Drag"",
+                    ""type"": ""Button"",
+                    ""id"": ""a164c474-c9fa-41c5-884d-4721b2ad4d3b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -135,6 +153,28 @@ namespace Game.Scripts.Runtime.Input
                     ""action"": ""Scroll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e7cc5aff-c523-41be-bf3a-096fad13b476"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PointerPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""984ef5c8-3536-48c8-a349-6a555f0f63b4"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -145,6 +185,8 @@ namespace Game.Scripts.Runtime.Input
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Click = m_UI.FindAction("Click", throwIfNotFound: true);
             m_UI_Scroll = m_UI.FindAction("Scroll", throwIfNotFound: true);
+            m_UI_PointerPosition = m_UI.FindAction("PointerPosition", throwIfNotFound: true);
+            m_UI_Drag = m_UI.FindAction("Drag", throwIfNotFound: true);
         }
 
         ~@GridActions()
@@ -227,6 +269,8 @@ namespace Game.Scripts.Runtime.Input
         private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
         private readonly InputAction m_UI_Click;
         private readonly InputAction m_UI_Scroll;
+        private readonly InputAction m_UI_PointerPosition;
+        private readonly InputAction m_UI_Drag;
         /// <summary>
         /// Provides access to input actions defined in input action map "UI".
         /// </summary>
@@ -246,6 +290,14 @@ namespace Game.Scripts.Runtime.Input
             /// Provides access to the underlying input action "UI/Scroll".
             /// </summary>
             public InputAction @Scroll => m_Wrapper.m_UI_Scroll;
+            /// <summary>
+            /// Provides access to the underlying input action "UI/PointerPosition".
+            /// </summary>
+            public InputAction @PointerPosition => m_Wrapper.m_UI_PointerPosition;
+            /// <summary>
+            /// Provides access to the underlying input action "UI/Drag".
+            /// </summary>
+            public InputAction @Drag => m_Wrapper.m_UI_Drag;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -278,6 +330,12 @@ namespace Game.Scripts.Runtime.Input
                 @Scroll.started += instance.OnScroll;
                 @Scroll.performed += instance.OnScroll;
                 @Scroll.canceled += instance.OnScroll;
+                @PointerPosition.started += instance.OnPointerPosition;
+                @PointerPosition.performed += instance.OnPointerPosition;
+                @PointerPosition.canceled += instance.OnPointerPosition;
+                @Drag.started += instance.OnDrag;
+                @Drag.performed += instance.OnDrag;
+                @Drag.canceled += instance.OnDrag;
             }
 
             /// <summary>
@@ -295,6 +353,12 @@ namespace Game.Scripts.Runtime.Input
                 @Scroll.started -= instance.OnScroll;
                 @Scroll.performed -= instance.OnScroll;
                 @Scroll.canceled -= instance.OnScroll;
+                @PointerPosition.started -= instance.OnPointerPosition;
+                @PointerPosition.performed -= instance.OnPointerPosition;
+                @PointerPosition.canceled -= instance.OnPointerPosition;
+                @Drag.started -= instance.OnDrag;
+                @Drag.performed -= instance.OnDrag;
+                @Drag.canceled -= instance.OnDrag;
             }
 
             /// <summary>
@@ -349,6 +413,20 @@ namespace Game.Scripts.Runtime.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnScroll(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "PointerPosition" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPointerPosition(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Drag" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnDrag(InputAction.CallbackContext context);
         }
     }
 }
