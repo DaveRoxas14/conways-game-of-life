@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using Game.Scripts.Runtime.Cell;
 using Game.Scripts.Runtime.Factory;
 using Game.Scripts.Runtime.Rules;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Game.Scripts.Runtime
@@ -21,13 +23,16 @@ namespace Game.Scripts.Runtime
         [SerializeField] private Color _aliveColor = Color.green;
         [SerializeField] private Color _deadColor = Color.red;
 
-        [SerializeField] private Button _button;
-        [SerializeField] private TextMeshProUGUI _buttonText;
+        
 
         [Header(StrattonConstants.INSPECTOR.REFERENCES)] 
         [SerializeField] private GameObject _cellPrefab;
         [SerializeField] private Transform _cellParent;
         [SerializeField] private RuleSO _rule;
+        [SerializeField] private Button _playButton;
+        [SerializeField] private TextMeshProUGUI _playbuttonText;
+        [SerializeField] private Button _nextButton;
+        [SerializeField] private TMP_InputField _intervalText;
 
         private GridController gridController;
         private IGridFactory factory = new GridFactory();
@@ -46,7 +51,9 @@ namespace Game.Scripts.Runtime
 
         private void Start()
         {
-            _button.onClick.AddListener(PlaySimulation);
+            _playButton.onClick.AddListener(PlaySimulation);
+            _nextButton.onClick.AddListener(Next);
+            _intervalText.onValueChanged.AddListener(OnIntervalTextChanged);
             gridController = new GridController(GridWidth, GridHeight, factory);
             CreateViews();
             StartCoroutine(Simulate());
@@ -66,9 +73,21 @@ namespace Game.Scripts.Runtime
                     var cell = Instantiate(_cellPrefab, _cellParent);
                     var renderer = cell.GetComponent<ICellRenderer>();
                     renderer.SetPosition(x - GridWidth / 2f, y - GridHeight / 2f);
-                    renderer.Initialize(grid[x,y], _deadColor, _aliveColor);
+                    renderer.Initialize(grid[x,y], _aliveColor, _deadColor);
                     renderers.Add(renderer);
                 }
+            }
+        }
+
+        private void OnIntervalTextChanged(string value)
+        {
+            try
+            {
+                _interval = int.Parse(value);
+            }
+            catch (Exception e)
+            {
+                // ignore
             }
         }
 
@@ -76,7 +95,7 @@ namespace Game.Scripts.Runtime
         {
             isPlaying = !isPlaying;
 
-            _buttonText.text = isPlaying ? StrattonConstants.BUTTON.STOP : StrattonConstants.BUTTON.PLAY;
+            _playbuttonText.text = isPlaying ? StrattonConstants.BUTTON.STOP : StrattonConstants.BUTTON.PLAY;
         }
 
         private IEnumerator Simulate()

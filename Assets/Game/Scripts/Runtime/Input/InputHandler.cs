@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Scripts.Runtime.Cell;
 using UnityEngine;
 
 namespace Game.Scripts.Runtime.Input
@@ -24,9 +25,20 @@ namespace Game.Scripts.Runtime.Input
         {
             var cam = _camera.GetComponent<Camera>();
             var world = cam.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-            var x = Mathf.FloorToInt(world.x + gameController.GridWidth / 2f);
-            var y = Mathf.FloorToInt(world.y + gameController.GridHeight / 2f);
-            gameController.ToggleCell(x, y);
+
+            var hit = Physics2D.Raycast(world, Vector2.zero);
+
+            if (hit.collider != null)
+            {
+                var cellRenderer = hit.collider.GetComponent<CellRendererView>();
+                if (cellRenderer != null)
+                {
+                    var x = Mathf.RoundToInt(cellRenderer.transform.localPosition.x + gameController.GridWidth / 2f);
+                    var y = Mathf.RoundToInt(cellRenderer.transform.localPosition.y + gameController.GridHeight / 2f);
+                    gameController.ToggleCell(x, y);
+                }
+            }
+           
         }
     }
 }
