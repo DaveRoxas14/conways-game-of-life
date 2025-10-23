@@ -5,6 +5,8 @@ namespace Game.Scripts.Runtime.Cell
 {
     public class CellRendererView : MonoBehaviour, ICellRenderer
     {
+        #region Members
+
         [Header(StrattonConstants.INSPECTOR.REFERENCES)]
         [SerializeField]
         private SpriteRenderer spriteRenderer;
@@ -14,6 +16,19 @@ namespace Game.Scripts.Runtime.Cell
         private Color deadColor;
 
         public Transform CellTransform => transform;
+
+        #endregion
+
+        #region Unity Methods
+
+        private void OnDestroy()
+        {
+            localCell.OnStateChanged += OnCellStateChanged;
+        }
+
+        #endregion
+
+        #region Helpers
 
         public void Initialize(ICell cell, Color alive, Color dead)
         {
@@ -25,12 +40,7 @@ namespace Game.Scripts.Runtime.Cell
             // initial setup
             OnCellStateChanged(cell);
         }
-
-        private void OnDestroy()
-        {
-            localCell.OnStateChanged += OnCellStateChanged;
-        }
-
+        
         private void OnCellStateChanged(ICell obj)
         {
             spriteRenderer.color = obj.IsAlive ? aliveColor : deadColor;
@@ -41,5 +51,7 @@ namespace Game.Scripts.Runtime.Cell
         {
             transform.localPosition = new Vector3(x, y, 0);
         }
+
+        #endregion
     }
 }

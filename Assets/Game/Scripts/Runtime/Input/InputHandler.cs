@@ -10,6 +10,8 @@ namespace Game.Scripts.Runtime.Input
 {
     public class InputHandler : MonoBehaviour
     {
+        #region Members
+
         [Header(StrattonConstants.INSPECTOR.REFERENCES)]
         [SerializeField] private GameObject _camera;
         [SerializeField] private InputReader _reader;
@@ -28,7 +30,11 @@ namespace Game.Scripts.Runtime.Input
         private bool isDragging = false;
 
         private Camera _cam;
-        
+
+        #endregion
+
+        #region Unity Functions
+
         private void Start()
         {
             _cam = _camera.GetComponent<Camera>();
@@ -38,7 +44,7 @@ namespace Game.Scripts.Runtime.Input
             _reader.OnDragPerformed += StartDrag;
             _reader.OnDragCancelled += EndDrag;
             _reader.OnDraggingEvent += DragCamera;
-            _zoomSlider.onValueChanged.AddListener(OnZoomVaueChanged);
+            _zoomSlider.onValueChanged.AddListener(OnZoomValueChanged);
         }
 
         private void OnDestroy()
@@ -48,10 +54,14 @@ namespace Game.Scripts.Runtime.Input
             _reader.OnDragPerformed -= StartDrag;
             _reader.OnDragCancelled -= EndDrag;
             _reader.OnDraggingEvent -= DragCamera;
-            _zoomSlider.onValueChanged.RemoveListener(OnZoomVaueChanged);
+            _zoomSlider.onValueChanged.RemoveListener(OnZoomValueChanged);
         }
 
-        private void OnZoomVaueChanged(float value)
+        #endregion
+
+        #region Input Events
+
+        private void OnZoomValueChanged(float value)
         {
             _cam.orthographicSize = Mathf.Clamp(_maxScrollValue * value, 1, _maxScrollValue);
         }
@@ -111,6 +121,10 @@ namespace Game.Scripts.Runtime.Input
             previousMousePos = currentMousePos;
         }
 
+        #endregion
+
+        #region Helpers
+
         private bool IsPointerOverUI(Vector2 pos)
         {
             var pointerData = new PointerEventData(EventSystem.current)
@@ -134,6 +148,8 @@ namespace Game.Scripts.Runtime.Input
             pos.y = Mathf.Clamp(pos.y, minBounds.y, maxBounds.y);
             _cam.transform.position = pos;
         }
+
+        #endregion
         
     }
 }

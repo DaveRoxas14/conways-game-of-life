@@ -31,14 +31,19 @@ namespace Game.Scripts.Runtime
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _nextButton;
         [SerializeField] private Button _resetButton;
+        [SerializeField] private Button _updateButton;
         
         [SerializeField] private TextMeshProUGUI _playbuttonText;
         [SerializeField] private TextMeshProUGUI _generationText;
         [SerializeField] private TextMeshProUGUI _livingCellsText;
         [SerializeField] private TextMeshProUGUI _resetButtonText;
+        [SerializeField] private TextMeshProUGUI _gridXText;
+        [SerializeField] private TextMeshProUGUI _gridYText;
 
         [SerializeField] private Slider _intervalSlider;
         [SerializeField] private Slider _cellSizeSlider;
+        [SerializeField] private Slider _gridXSlider;
+        [SerializeField] private Slider _gridYSlider;
 
         private GridController gridController;
         private IGridFactory factory = new GridFactory();
@@ -63,12 +68,20 @@ namespace Game.Scripts.Runtime
             _intervalSlider.value = _interval;
             _cellSizeSlider.value = 1f;
             
+            
             _playButton.onClick.AddListener(PlaySimulation);
             _nextButton.onClick.AddListener(Next);
             _resetButton.onClick.AddListener(ResetToInitial);
+            _updateButton.onClick.AddListener(UpdateViews);
             
             _intervalSlider.onValueChanged.AddListener(OnIntervalTextChanged);
             _cellSizeSlider.onValueChanged.AddListener(OnCellSizeSliderChanged);
+            
+            _gridXSlider.onValueChanged.AddListener(OnGridXSliderChanged);
+            _gridYSlider.onValueChanged.AddListener(OnGridYSliderChanged);
+            
+            _gridXSlider.value = Mathf.Clamp(_gridWidth, 0, _gridXSlider.maxValue);
+            _gridYSlider.value = Mathf.Clamp(_gridHeight, 0, _gridYSlider.maxValue);
             
             
             gridController = new GridController(GridWidth, GridHeight, factory);
@@ -99,6 +112,27 @@ namespace Game.Scripts.Runtime
             }
         }
 
+        private void UpdateViews()
+        {
+            _isReset = true;
+            ResetToInitial();
+            _resetButtonText.text = "Clear";
+            
+            foreach (var cellRenderer in renderers)
+            {
+                Destroy(cellRenderer.CellTransform.gameObject);
+            }
+            
+            renderers.Clear();
+            
+            _gridHeight = (int)_gridYSlider.value;
+            _gridWidth = (int)_gridXSlider.value;
+            
+            gridController = new GridController(GridWidth, GridHeight, factory);
+            
+            CreateViews();
+        }
+
         private void OnIntervalTextChanged(float value)
         {
             try
@@ -117,6 +151,8 @@ namespace Game.Scripts.Runtime
             isPlaying = !isPlaying;
 
             _playbuttonText.text = isPlaying ? StrattonConstants.BUTTON.STOP : StrattonConstants.BUTTON.PLAY;
+
+            _updateButton.interactable = !isPlaying;
         }
 
         private IEnumerator Simulate()
@@ -200,6 +236,16 @@ namespace Game.Scripts.Runtime
             PlaySimulation();
             _resetButtonText.text = "Clear";
             
+        }
+
+        private void OnGridXSliderChanged(float value)
+        {
+            _gridXText.text = $"{value}";
+        }
+        
+        private void OnGridYSliderChanged(float value)
+        {
+            _gridYText.text = $"{value}";
         }
         
 

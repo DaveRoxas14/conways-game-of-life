@@ -4,6 +4,8 @@ namespace Game.Scripts.Runtime.Factory
 {
     public class GridController
     {
+        #region Members
+
         public ICell[,] Grid { get; private set; }
 
         private int _width = 0;
@@ -11,12 +13,20 @@ namespace Game.Scripts.Runtime.Factory
 
         private List<ICell> _startingCells = new List<ICell>();
 
+        #endregion
+
+        #region Constructor
+
         public GridController(int width, int height, IGridFactory factory)
         {
             _width = width;
             _height = height;
             Grid = factory.Create(width, height);
         }
+
+        #endregion
+
+        #region Public Helpers
 
         public ICell[] GetNeighbors(int x, int y)
         {
@@ -98,5 +108,7 @@ namespace Game.Scripts.Runtime.Factory
                 }
             }
         }
+
+        #endregion
     }
 }
