@@ -8,6 +8,7 @@ namespace Game.Scripts.Runtime.Input
     public class InputReader : ScriptableObject, GridActions.IUIActions
     {
         public event Action OnClick;
+        public event Action<Vector2> OnScrollEvent; 
 
         private GridActions _gridInput;
 
@@ -33,6 +34,11 @@ namespace Game.Scripts.Runtime.Input
             {
                 OnClick?.Invoke();
             }
+        }
+
+        public void OnScroll(InputAction.CallbackContext context)
+        {
+            OnScrollEvent?.Invoke(context.ReadValue<Vector2>());
         }
     }
 }

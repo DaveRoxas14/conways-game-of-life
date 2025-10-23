@@ -32,12 +32,15 @@ namespace Game.Scripts.Runtime
         [SerializeField] private Button _playButton;
         [SerializeField] private TextMeshProUGUI _playbuttonText;
         [SerializeField] private Button _nextButton;
-        [SerializeField] private TMP_InputField _intervalText;
+        [SerializeField] private Slider _intervalSlider;
+        [SerializeField] private TextMeshProUGUI _generationText;
+        [SerializeField] private TextMeshProUGUI _livingCellsText;
 
         private GridController gridController;
         private IGridFactory factory = new GridFactory();
         private List<ICellRenderer> renderers = new ();
         private bool isPlaying;
+        private int currentGen;
 
         public GridController GridController => gridController;
 
@@ -53,9 +56,13 @@ namespace Game.Scripts.Runtime
         {
             _playButton.onClick.AddListener(PlaySimulation);
             _nextButton.onClick.AddListener(Next);
-            _intervalText.onValueChanged.AddListener(OnIntervalTextChanged);
+            _intervalSlider.onValueChanged.AddListener(OnIntervalTextChanged);
+            _intervalSlider.value = _interval;
             gridController = new GridController(GridWidth, GridHeight, factory);
             CreateViews();
+            UpdateGeneration(0, true);
+            UpdateAliveText(true);
+            
             StartCoroutine(Simulate());
         }
 
@@ -79,15 +86,16 @@ namespace Game.Scripts.Runtime
             }
         }
 
-        private void OnIntervalTextChanged(string value)
+        private void OnIntervalTextChanged(float value)
         {
             try
             {
-                _interval = int.Parse(value);
+                _interval = 1 - value;
             }
             catch (Exception e)
             {
                 // ignore
+                _interval = 0.1f;
             }
         }
 
@@ -108,7 +116,22 @@ namespace Game.Scripts.Runtime
                     continue;
                 }
                 
-                yield return new WaitForSeconds(_interval);
+                var count = 0f;
+                while (count < _interval)
+                {
+                    if (!isPlaying)
+                    {
+                        yield return null;
+                        continue;
+                    }
+                    
+                    count += Time.fixedDeltaTime;
+
+                    yield return null;
+                }
+                
+                // yield return new WaitForSeconds(_interval);
+                yield return null;
                 
                 Next();
             }
@@ -134,6 +157,20 @@ namespace Game.Scripts.Runtime
                     gridController.SetCellState(x, y, nextStates[x, y]);
                 }
             }
+            
+            UpdateGeneration();
+            UpdateAliveText();
+        }
+
+        private void ResetToInitial()
+        {
+            UpdateGeneration();
+            UpdateAliveText();
+        }
+
+        private void Clear()
+        {
+            
         }
         
         public void ToggleCell(int x, int y)
@@ -141,6 +178,32 @@ namespace Game.Scripts.Runtime
             if (x < 0 || x >= _gridWidth || y < 0 || y >= _gridHeight) return;
             var cell = gridController.Grid[x, y];
             gridController.SetCellState(x, y, !cell.IsAlive);
+            UpdateGeneration(0, true);
+            UpdateAliveText();
+        }
+        
+        public List<ICell> GetAliveCells()
+        {
+            return gridController.GetAliveCells();
+        }
+
+        private void UpdateGeneration(int value = 1, bool reset = false)
+        {
+            if (!reset)
+            {
+                currentGen += value;
+                _generationText.text = $"Generation: {currentGen}";
+            }
+            else
+            {
+                currentGen = 0;
+                _generationText.text = "Generation: 0";
+            }
+        }
+        
+        private void UpdateAliveText(bool reset = false)
+        {
+            _livingCellsText.text = reset ? "Living Cells: 0" : $"Living Cells: {GetAliveCells().Count}";
         }
 
         #endregion

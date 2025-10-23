@@ -39,5 +39,22 @@ namespace Game.Scripts.Runtime.Factory
         {
             Grid[x,y].SetAlive(alive);
         }
+
+        public List<ICell> GetAliveCells()
+        {
+            var aliveList = new List<ICell>();
+            for (var x = 0; x < _width; x++)
+            {
+                for (var y = 0; y < _height; y++)
+                {
+                    if (Grid[x, y].IsAlive)
+                    {
+                        aliveList.Add(Grid[x,y]);
+                    }
+                }
+            }
+
+            return aliveList;
+        }
     }
 }
